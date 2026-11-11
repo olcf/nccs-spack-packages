@@ -3,7 +3,7 @@
 import os
 import platform
 from pathlib import Path
-from typing import Dict, List, Literal
+from typing import Dict, List
 
 import spack.store as spack_store
 from spack.error import SpecError
@@ -24,6 +24,7 @@ from spack.package import (
 )
 from spack.vendor import distro
 from spack.vendor.jinja2 import Environment, FileSystemLoader, StrictUndefined, Template
+from spack.vendor.typing_extensions import Literal
 
 ELFCLASS32: int = 1
 ELFCLASS64: int = 2
@@ -163,8 +164,16 @@ class TarballPackage(PackageBase):
         paths: List[str] = []
         for p in self.rpath:
             path: Path = Path(p)
-            if path.exists() and path.is_relative_to(spack_install_root):
-                paths.append(str(path))
+
+            if not path.exists():
+                continue
+
+            try:
+                path.relative_to(spack_install_root)
+            except ValueError:
+                continue
+
+            paths.append(str(path))
 
         return paths
 

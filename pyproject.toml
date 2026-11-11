@@ -30,6 +30,7 @@ ignore = [
 files = [
     "repos/spack_repo/**/*.py"
 ]
+namespace_packages = true
 explicit_package_bases = true
 ignore_missing_imports = true
 disable_error_code = [
