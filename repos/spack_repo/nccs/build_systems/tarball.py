@@ -52,7 +52,7 @@ def is_elf_with_rpath(path: Path) -> bool:
         if elf_class not in (ELFCLASS32, ELFCLASS64):
             return False
 
-        byteorder: Literal["little", "big"]
+        byteorder: Literal["little", "big"]  # noqa: F821, UP037
         if elf_data == ELFDATA2LSB:
             byteorder = "little"
         elif elf_data == ELFDATA2MSB:
