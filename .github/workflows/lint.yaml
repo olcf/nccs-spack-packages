@@ -1,19 +1,24 @@
-name: >- 
-  Lint PR #${{ github.event.pull_request.number }}
-  [${{ github.head_ref }} @ ${{ github.event.pull_request.head.sha }}]
+name: Lint
 
 on:
   pull_request:
     branches:
       - main
 
+permissions:
+  content: read
+
 concurrency:
   group: lint-pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+run-name: >-
+  Lint PR #${{ github.event.pull_request.number }}
+  [${{ github.head_ref }} @ ${{ github.event.pull_request.head.sha }}]
+
 jobs:
   lint:
-    name: Lint
+    name: Ruff & Mypy
     runs-on: ubuntu-22.04
     timeout-minutes: 15
 
