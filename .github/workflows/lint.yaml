@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  content: read
+  contents: read
 
 concurrency:
   group: lint-pr-${{ github.event.pull_request.number }}
