@@ -80,6 +80,8 @@ def is_elf_with_rpath(path: Path) -> bool:
 def map_to_enterprise_distro(distribution: str) -> str:
     if distribution == "almalinux" or distribution == "rocky":
         return "rhel"
+    elif distribution == "opensuse":
+        return "sles"
     else:
         return distribution
 
