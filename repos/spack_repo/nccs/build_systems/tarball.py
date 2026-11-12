@@ -5,7 +5,6 @@ import platform
 from pathlib import Path
 from typing import Dict, List
 
-import spack.store as spack_store
 from spack.error import SpecError
 from spack.package import (
     BuilderWithDefaults,
@@ -32,6 +31,15 @@ ELFDATA2LSB: int = 1
 ELFDATA2MSB: int = 2
 ET_EXEC: int = 2
 ET_DYN: int = 3
+
+SYSTEM_RPATHS: List[Path] = [
+    Path("/lib"),
+    Path("/lib64"),
+    Path("/usr/lib"),
+    Path("/usr/lib64"),
+    Path("/usr/local/lib"),
+    Path("/usr/local/lib64"),
+]
 
 
 def is_elf_with_rpath(path: Path) -> bool:
@@ -159,18 +167,15 @@ class TarballPackage(PackageBase):
 
     @property
     def valid_rpaths(self) -> List[str]:
-        spack_install_root: Path = Path(spack_store.STORE.root).resolve()
-
         paths: List[str] = []
+
         for p in self.rpath:
-            path: Path = Path(p)
+            path = Path(p).resolve()
 
             if not path.exists():
                 continue
 
-            try:
-                path.relative_to(spack_install_root)
-            except ValueError:
+            if any(path == sys_rpath or sys_rpath in path.parents for sys_rpath in SYSTEM_RPATHS):
                 continue
 
             paths.append(str(path))
